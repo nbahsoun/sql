@@ -57,7 +57,25 @@ The store wants to keep customer addresses. Propose two architectures for the CU
 **HINT:** search type 1 vs type 2 slowly changing dimensions. 
 
 ```
-Your answer...
+Two architectures for the CUSTOMER_ADDRESS table:
+
+Type 1 (overwrite):
+Columns: address_id (PK), customer_id (FK), street, city, province, postal_code, country
+Each customer has one address row. When a customer moves, the existing row is updated
+in place and the old address is lost. This keeps the table small and simple, but no
+history is retained. The relationship to customer is one-to-one.
+
+Type 2 (retain changes):
+Columns: address_id (PK), customer_id (FK), street, city, province, postal_code, country,
+start_date, end_date, is_current
+When a customer moves, the current row is closed (end_date is set and is_current becomes
+false) and a new row is inserted with the new address. Every past address is retained,
+so the store can see where a customer lived at the time of any order. The relationship
+to customer is one-to-many.
+
+The overwrite architecture is Type 1 and the history-retaining architecture is Type 2.
+Type 1 suits cases where only the current value matters (e.g. correcting a typo), while
+Type 2 suits cases where history matters (e.g. analyzing sales by region over time).
 ```
 
 ***
@@ -192,5 +210,13 @@ Consider, for example, concepts of labour, bias, LLM proliferation, moderating c
 
 
 ```
-Your thoughts...
+The central argument of Boykis’s essay is that AI is not as autonomous or objective as it often appears. Behind seemingly intelligent systems are people doing data labeling, categorization, moderation, and evaluation. This raises important ethical questions about whose labour and values are embedded in AI and who benefits from its development, particularly when the people responsible for building and maintaining these systems are often underpaid, unrecognized, and excluded from the benefits of the technologies they help create.
+
+One significant issue Boykis raises is bias. ImageNet Roulette demonstrated how human assumptions can become embedded in AI through the categories used to organize data and the labels assigned to images. Boykis highlights that approximately 56% of ImageNet's person categories were identified as offensive or sensitive, illustrating how seemingly objective datasets can reflect the biases of those who create them. When used to train AI, these biases can be reproduced at scale, potentially reinforcing existing stereotypes and inequalities.
+
+As a scientist, this makes me think about how data is often perceived as objective, so conclusions drawn from it can carry an authority they may not actually deserve. If the underlying data is biased or incomplete, those conclusions can be treated as facts and generalized to broader populations, potentially reinforcing existing biases. This highlights the importance of critically examining how data was collected, which groups were included or excluded, and what limitations or biases may be present in the dataset.
+
+Another important ethical issue is the invisibility and exploitation of labour involved in creating training datasets. Boykis describes how ImageNet relied on workers through Amazon Mechanical Turk to manually label millions of images. Although this work was essential to advancing machine learning, workers were often paid very little and received little recognition for their contributions. Meanwhile, researchers and organizations benefited from the datasets they helped produce. This reflects a broader issue in science, where contributions to data collection, sample processing, and other research activities are not always adequately acknowledged. It raises questions about how the benefits and recognition of scientific progress are distributed, and whose contributions are valued.
+
+These issues remain relevant today, particularly with the proliferation of large language models (LLMs). Despite their ability to generate seemingly independent responses, LLMs depend on human-generated training data, feedback, and evaluation. The biases within this data and the judgments of those involved in evaluating model responses influence what these systems learn and how they behave, meaning the same human assumptions and labour discussed by Boykis continue to shape AI, even when their influence is not immediately visible to users. Ultimately, Boykis challenges us to reconsider what we mean when we describe AI as automated or intelligent, reminding us that these systems reflect the people, institutions, and values involved in building them.
 ```
